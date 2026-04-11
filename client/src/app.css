@@ -1,3 +1,89 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+@theme {
+  --color-secondary: #b41924;
+  --color-inverse-primary: #6889ff;
+  --color-outline: #008944;
+  --color-on-secondary-fixed-variant: #a4061b;
+  --color-tertiary-container: #fdd400;
+  --color-surface: #deffe0;
+  --color-primary-fixed: #809bff;
+  --color-secondary-fixed-dim: #ffafaa;
+  --color-tertiary-fixed-dim: #edc600;
+  --color-on-tertiary-container: #594a00;
+  --color-surface-bright: #deffe0;
+  --color-error: #b41340;
+  --color-on-tertiary-fixed: #433700;
+  --color-on-primary-container: #001b61;
+  --color-on-surface-variant: #006a33;
+  --color-on-error-container: #510017;
+  --color-primary-dim: #0041c7;
+  --color-on-secondary-container: #940015;
+  --color-on-tertiary-fixed-variant: #645300;
+  --color-inverse-surface: #001205;
+  --color-inverse-on-surface: #00b45b;
+  --color-on-tertiary: #fff2ce;
+  --color-on-error: #ffefef;
+  --color-tertiary: #6d5a00;
+  --color-secondary-container: #ffc3bf;
+  --color-on-secondary: #ffefee;
+  --color-surface-dim: #00f47d;
+  --color-on-primary-fixed: #000000;
+  --color-primary: #004be2;
+  --color-primary-fixed-dim: #6c8cff;
+  --color-secondary-fixed: #ffc3bf;
+  --color-error-dim: #a70138;
+  --color-on-primary-fixed-variant: #002376;
+  --color-on-secondary-fixed: #70000d;
+  --color-surface-container: #93ffad;
+  --color-tertiary-fixed: #fdd400;
+  --color-surface-container-high: #62ff96;
+  --color-surface-container-highest: #00fd83;
+  --color-on-surface: #003717;
+  --color-surface-variant: #00fd83;
+
+  --font-headline: "Plus Jakarta Sans", sans-serif;
+  --font-body: "Space Grotesk", sans-serif;
+  --font-label: "Space Grotesk", sans-serif;
+
+  --radius: 0px;
+  --radius-sm: 0px;
+  --radius-md: 0px;
+  --radius-lg: 0px;
+  --radius-xl: 0px;
+  --radius-2xl: 0px;
+  --radius-3xl: 0px;
+  --radius-full: 9999px;
+}
+
+@utility material-symbols-outlined {
+  font-family: 'Material Symbols Outlined';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-feature-settings: 'liga';
+  -webkit-font-smoothing: antialiased;
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+
+@utility neo-shadow {
+  box-shadow: 4px 4px 0px 0px #000000;
+}
+
+@utility neo-shadow-lg {
+  box-shadow: 8px 8px 0px 0px #000000;
+}
+
+@utility active-press {
+  &:active {
+    transform: translate(4px, 4px); 
+    box-shadow: 0px 0px 0px 0px #000000; 
+  }
+}

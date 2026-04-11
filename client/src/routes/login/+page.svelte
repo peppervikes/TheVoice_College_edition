@@ -8,7 +8,6 @@
   async function handleLogin() {
     try {
       const res = await axios.post('http://localhost:5000/api/auth/login', { email, password });
-      alert('Login successful');
       window.location.href = '/';
     } catch (error) {
       errorMsg = error.response?.data?.error || 'Login failed';
@@ -16,39 +15,55 @@
   }
 
   function handleGoogleLogin() {
-    // Stub
     alert('Google login not implemented in MVP UI');
   }
 </script>
 
-<div class="max-w-md mx-auto mt-16 bg-white p-8 border rounded shadow-sm">
-  <h2 class="text-2xl font-bold mb-6 text-center">Login</h2>
+<svelte:head>
+  <title>RateMyCourse - SignIn</title>
+</svelte:head>
 
-  {#if errorMsg}
-    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-      {errorMsg}
-    </div>
-  {/if}
+<div class="max-w-xl mx-auto mt-24 mb-32 bg-white pb-8 border-4 border-black neo-shadow-lg">
+  <div class="bg-[#b41924] border-b-4 border-black p-6">
+    <h2 class="text-4xl font-headline font-black text-white uppercase tracking-tighter">Sign In</h2>
+  </div>
 
-  <form on:submit|preventDefault={handleLogin} class="space-y-4">
-    <div>
-      <label class="block text-gray-700">Email</label>
-      <input type="email" bind:value={email} required class="w-full p-2 border rounded mt-1 focus:ring focus:border-blue-300" />
-    </div>
-    <div>
-      <label class="block text-gray-700">Password</label>
-      <input type="password" bind:value={password} required class="w-full p-2 border rounded mt-1 focus:ring focus:border-blue-300" />
-    </div>
-    
-    <button type="submit" class="w-full bg-blue-600 text-white font-bold py-2 px-4 rounded hover:bg-blue-700 transition">
-      Login
-    </button>
-  </form>
+  <div class="px-8 pt-8">
+    {#if errorMsg}
+      <div class="bg-[#ffefef] border-4 border-[#b41340] text-[#b41340] px-4 py-3 mb-6 font-bold uppercase tracking-wider">
+        {errorMsg}
+      </div>
+    {/if}
 
-  <div class="mt-6 text-center">
-    <p class="text-gray-600">Or</p>
-    <button on:click={handleGoogleLogin} class="mt-4 w-full bg-white border border-gray-300 text-gray-700 font-bold py-2 px-4 rounded hover:bg-gray-50 transition flex items-center justify-center">
-      Login with Google
-    </button>
+    <form onsubmit={handleLogin} class="space-y-6">
+      <div>
+        <label class="block font-black text-xl mb-2 uppercase tracking-tight">Email</label>
+        <input type="email" bind:value={email} required class="w-full bg-white border-4 border-black p-4 text-xl font-bold neo-shadow focus:shadow-none focus:translate-x-1 focus:translate-y-1 transition-all outline-none" placeholder="student@uni.edu" />
+      </div>
+      <div>
+        <label class="block font-black text-xl mb-2 uppercase tracking-tight">Password</label>
+        <input type="password" bind:value={password} required class="w-full bg-white border-4 border-black p-4 text-xl font-bold neo-shadow focus:shadow-none focus:translate-x-1 focus:translate-y-1 transition-all outline-none" placeholder="••••••••" />
+      </div>
+      
+      <button type="submit" class="w-full bg-[#004be2] text-white border-4 border-black font-headline font-black text-2xl uppercase py-4 neo-shadow active-press mt-4">
+        Login -&gt;
+      </button>
+    </form>
+
+    <div class="mt-10 text-center">
+      <div class="relative">
+        <div class="absolute inset-0 flex items-center">
+          <div class="w-full border-t-4 border-black"></div>
+        </div>
+        <div class="relative flex justify-center text-sm">
+          <span class="px-4 bg-white font-black text-xl uppercase tracking-widest text-[#b41924]">Or</span>
+        </div>
+      </div>
+      
+      <button onclick={handleGoogleLogin} class="mt-8 w-full bg-[#fdd400] text-black border-4 border-black font-headline font-black text-xl uppercase py-4 neo-shadow active-press flex items-center justify-center gap-4">
+        <span class="material-symbols-outlined text-3xl leading-none">login</span>
+        Sign in with Google
+      </button>
+    </div>
   </div>
 </div>
