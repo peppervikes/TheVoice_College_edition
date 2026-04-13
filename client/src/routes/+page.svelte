@@ -1,5 +1,5 @@
 <script>
-  import axios from 'axios';
+  import api from '$lib/api.js';
   import { onMount } from 'svelte';
 
   let universities = $state([]);
@@ -7,7 +7,7 @@
 
   onMount(async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/search');
+      const res = await api.get('/universities');
       universities = res.data;
     } catch (error) {
       console.error('Failed to load universities:', error);

@@ -1,6 +1,6 @@
 <script>
   import { page } from '$app/stores';
-  import axios from 'axios';
+  import api from '$lib/api.js';
   import { onMount } from 'svelte';
 
   const universityId = $page.params.id;
@@ -17,13 +17,12 @@
   async function fetchObjects() {
     try {
       if (universityName === 'Loading...') {
-        // Quick hack to fetch university name
-        const uniRes = await axios.get('http://localhost:5000/api/search');
+        const uniRes = await api.get('/universities');
         const uni = uniRes.data.find(u => u._id === universityId);
         if(uni) universityName = uni.name;
       }
 
-      const res = await axios.get(`http://localhost:5000/api/search?universityId=${universityId}&type=${type}&q=${searchQuery}`);
+      const res = await api.get(`/search?universityId=${universityId}&type=${type}&q=${searchQuery}`);
       results = res.data;
     } catch (error) {
       console.error('Failed to fetch objects', error);
@@ -89,7 +88,7 @@
         </div>
         <div class="mt-auto p-4 bg-gray-100 border-t-4 border-black flex justify-end">
           <a href={`/object/${type}/${item._id}`} class="font-black underline decoration-4 text-lg hover:text-[#004be2] uppercase">
-            VIEW REVIEWS -&gt;
+            VIEW REVIEWS ->
           </a>
         </div>
       </div>

@@ -1,6 +1,8 @@
 <script>
   import { page } from '$app/stores';
-  import axios from 'axios';
+  import api from '$lib/api.js';
+  import { auth } from '$lib/stores/auth.js';
+  import { onMount } from 'svelte';
 
   const type = $page.url.searchParams.get('type');
   const id = $page.url.searchParams.get('id');
@@ -11,13 +13,29 @@
   let anonymous = $state(true);
   let isSubmitting = $state(false);
   let errorMsg = $state('');
+  let authState = $state({ user: null, isLoggedIn: false });
 
-  async function submitReview() {
+  auth.subscribe((value) => {
+    authState = value;
+  });
+
+  onMount(() => {
+    // Redirect to login if not authenticated
+    if (typeof window !== 'undefined') {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        window.location.href = `/login`;
+      }
+    }
+  });
+
+  async function submitReview(e) {
+    e.preventDefault();
     isSubmitting = true;
     errorMsg = '';
     
     try {
-      await axios.post('http://localhost:5000/api/reviews', {
+      await api.post('/reviews', {
         objectType: type,
         objectId: id,
         universityId,
@@ -49,7 +67,12 @@
       <h2 class="text-5xl md:text-7xl font-headline font-black uppercase tracking-tighter leading-none text-[#004be2]">
         DROP <br/> <span class="text-black inline-block bg-[#fdd400] px-4 transform -rotate-1 border-4 border-black mt-2">KNOWLEDGE.</span>
       </h2>
-      <p class="font-bold uppercase tracking-widest mt-6 text-xl">Reviewing {type.toUpperCase()} ID: {id.slice(-6)}</p>
+      <p class="font-bold uppercase tracking-widest mt-6 text-xl">
+        Reviewing {type?.toUpperCase() || ''} 
+        {#if authState.isLoggedIn}
+          <span class="text-[#004be2]">as {authState.user?.pseudonym}</span>
+        {/if}
+      </p>
     </div>
     
     {#if errorMsg}

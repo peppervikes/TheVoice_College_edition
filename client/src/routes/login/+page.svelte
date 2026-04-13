@@ -1,26 +1,35 @@
 <script>
-  import axios from 'axios';
+  import { auth } from '$lib/stores/auth.js';
   
   let email = $state('');
   let password = $state('');
   let errorMsg = $state('');
+  let isLoading = $state(false);
 
-  async function handleLogin() {
+  async function handleLogin(e) {
+    e.preventDefault();
+    isLoading = true;
+    errorMsg = '';
+    
     try {
-      const res = await axios.post('http://localhost:5000/api/auth/login', { email, password });
+      await auth.login(email, password);
       window.location.href = '/';
     } catch (error) {
-      errorMsg = error.response?.data?.error || 'Login failed';
+      errorMsg = error.response?.data?.error || 'Login failed. Check your credentials.';
+    } finally {
+      isLoading = false;
     }
   }
 
   function handleGoogleLogin() {
-    alert('Google login not implemented in MVP UI');
+    // Will be wired when GOOGLE_CLIENT_ID is available
+    // For now, use the dev stub
+    errorMsg = 'Google login requires setup. Use email/password or register a new account.';
   }
 </script>
 
 <svelte:head>
-  <title>RateMyCourse - SignIn</title>
+  <title>RateMyCourse - Sign In</title>
 </svelte:head>
 
 <div class="max-w-xl mx-auto mt-24 mb-32 bg-white pb-8 border-4 border-black neo-shadow-lg">
@@ -30,23 +39,23 @@
 
   <div class="px-8 pt-8">
     {#if errorMsg}
-      <div class="bg-[#ffefef] border-4 border-[#b41340] text-[#b41340] px-4 py-3 mb-6 font-bold uppercase tracking-wider">
+      <div class="bg-[#ffefef] border-4 border-[#b41340] text-[#b41340] px-4 py-3 mb-6 font-bold uppercase tracking-wider text-sm">
         {errorMsg}
       </div>
     {/if}
 
     <form onsubmit={handleLogin} class="space-y-6">
       <div>
-        <label class="block font-black text-xl mb-2 uppercase tracking-tight">Email</label>
-        <input type="email" bind:value={email} required class="w-full bg-white border-4 border-black p-4 text-xl font-bold neo-shadow focus:shadow-none focus:translate-x-1 focus:translate-y-1 transition-all outline-none" placeholder="student@uni.edu" />
+        <label for="login-email" class="block font-black text-xl mb-2 uppercase tracking-tight">Email</label>
+        <input id="login-email" type="email" bind:value={email} required class="w-full bg-white border-4 border-black p-4 text-xl font-bold neo-shadow focus:shadow-none focus:translate-x-1 focus:translate-y-1 transition-all outline-none" placeholder="student@uni.edu" />
       </div>
       <div>
-        <label class="block font-black text-xl mb-2 uppercase tracking-tight">Password</label>
-        <input type="password" bind:value={password} required class="w-full bg-white border-4 border-black p-4 text-xl font-bold neo-shadow focus:shadow-none focus:translate-x-1 focus:translate-y-1 transition-all outline-none" placeholder="••••••••" />
+        <label for="login-password" class="block font-black text-xl mb-2 uppercase tracking-tight">Password</label>
+        <input id="login-password" type="password" bind:value={password} required class="w-full bg-white border-4 border-black p-4 text-xl font-bold neo-shadow focus:shadow-none focus:translate-x-1 focus:translate-y-1 transition-all outline-none" placeholder="••••••••" />
       </div>
       
-      <button type="submit" class="w-full bg-[#004be2] text-white border-4 border-black font-headline font-black text-2xl uppercase py-4 neo-shadow active-press mt-4">
-        Login -&gt;
+      <button type="submit" disabled={isLoading} class="w-full bg-[#004be2] text-white border-4 border-black font-headline font-black text-2xl uppercase py-4 neo-shadow active-press mt-4 disabled:opacity-50">
+        {isLoading ? 'Logging in...' : 'Login ->'}
       </button>
     </form>
 
@@ -64,6 +73,11 @@
         <span class="material-symbols-outlined text-3xl leading-none">login</span>
         Sign in with Google
       </button>
+
+      <p class="mt-8 font-bold uppercase tracking-wider">
+        Don't have an account? 
+        <a href="/register" class="text-[#004be2] underline decoration-4 hover:bg-[#004be2] hover:text-white px-1 transition-none">Register</a>
+      </p>
     </div>
   </div>
 </div>
