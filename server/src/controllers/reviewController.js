@@ -205,3 +205,17 @@ exports.voteReview = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
+/**
+ * GET /api/reviews/me
+ * Get reviews created by the authenticated user. Requires authentication.
+ */
+exports.getMyReviews = async (req, res) => {
+  try {
+    const reviews = await Review.find({ userId: req.user.id })
+      .sort({ createdAt: -1 });
+    res.json(reviews);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};

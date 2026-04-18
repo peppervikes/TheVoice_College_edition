@@ -6,6 +6,7 @@ const { requireAuth, requireRole } = require('../middleware/authMiddleware');
 // Public routes
 router.get('/search', objectController.searchObjects);
 router.get('/universities', objectController.getUniversities);
+router.get('/stats', objectController.getStats);
 router.get('/object/:type/:id', objectController.getObjectDetails);
 
 // Admin-only routes

@@ -28,12 +28,12 @@ exports.searchObjects = async (req, res) => {
     if (!universityId) {
       // Search universities
       const filter = {};
-      if (q) filter.name = new RegExp(q, 'i');
+      if (q) filter.name = { $regex: q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), $options: 'i' };
       results = await University.find(filter).limit(20);
     } else {
       // Search within a university
       const filter = { universityId };
-      if (q) filter.name = new RegExp(q, 'i');
+      if (q) filter.name = { $regex: q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), $options: 'i' };
 
       const Model = getModel(type);
       if (!Model) {
@@ -148,6 +148,23 @@ exports.getUniversities = async (req, res) => {
   try {
     const universities = await University.find().sort({ name: 1 });
     res.json(universities);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+/**
+ * GET /api/stats
+ * Get overall platform statistics.
+ */
+exports.getStats = async (req, res) => {
+  try {
+    const [totalReviews, totalUniversities, totalUsers] = await Promise.all([
+      Review.countDocuments(),
+      University.countDocuments(),
+      require('../models/User').countDocuments()
+    ]);
+    res.json({ totalReviews, totalUniversities, totalUsers });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

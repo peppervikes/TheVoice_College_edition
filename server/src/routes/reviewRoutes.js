@@ -8,6 +8,7 @@ router.get('/', reviewController.getReviews);
 
 // Protected — requires login
 router.post('/', requireAuth, reviewController.createReview);
+router.get('/me', requireAuth, reviewController.getMyReviews);
 router.put('/:id', requireAuth, reviewController.updateReview);
 router.delete('/:id', requireAuth, reviewController.deleteReview);
 router.post('/:id/vote', requireAuth, reviewController.voteReview);

@@ -4,13 +4,18 @@
 
   let universities = $state([]);
   let searchQuery = $state('');
+  let stats = $state({ totalReviews: 0, totalUniversities: 0 });
 
   onMount(async () => {
     try {
-      const res = await api.get('/universities');
-      universities = res.data;
+      const [uniRes, statsRes] = await Promise.all([
+        api.get('/universities'),
+        api.get('/stats')
+      ]);
+      universities = uniRes.data;
+      stats = statsRes.data;
     } catch (error) {
-      console.error('Failed to load universities:', error);
+      console.error('Failed to load data:', error);
     }
   });
 
@@ -89,11 +94,11 @@
     </div>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
       <div class="bg-white border-4 border-black p-8 neo-shadow flex flex-col items-center text-center">
-        <span class="text-6xl font-headline font-black text-[#004be2]">{(Math.random() * 100).toFixed(1)}k+</span>
+        <span class="text-6xl font-headline font-black text-[#004be2]">{stats.totalReviews || 0}+</span>
         <p class="font-black uppercase tracking-widest mt-2">REVIEWS SUBMITTED</p>
       </div>
       <div class="bg-[#fdd400] border-4 border-black p-8 neo-shadow flex flex-col items-center text-center">
-        <span class="text-6xl font-headline font-black">{universities.length || 0}+</span>
+        <span class="text-6xl font-headline font-black">{stats.totalUniversities || universities.length || 0}+</span>
         <p class="font-black uppercase tracking-widest mt-2">COLLEGES TRACKED</p>
       </div>
       <div class="bg-white border-4 border-black p-8 neo-shadow flex flex-col items-center text-center">
