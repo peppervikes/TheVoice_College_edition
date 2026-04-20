@@ -2,6 +2,7 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const { OAuth2Client } = require('google-auth-library');
 const User = require('../models/User');
+const logger = require('../utils/logger');
 
 const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
@@ -133,7 +134,7 @@ exports.googleLogin = async (req, res) => {
       email = `testuser_${Date.now()}@dev.local`;
       name = 'DevUser';
       googleId = `dev-${Date.now()}`;
-      console.warn('⚠️  GOOGLE_CLIENT_ID not set — using dev stub for Google login.');
+      logger.warn('⚠️  GOOGLE_CLIENT_ID not set — using dev stub for Google login.');
     }
 
     // Find or create user
@@ -166,7 +167,7 @@ exports.googleLogin = async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Google login error:', error);
+    logger.error('Google login error:', error);
     res.status(500).json({ error: 'Google authentication failed.' });
   }
 };

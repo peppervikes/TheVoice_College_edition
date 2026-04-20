@@ -2,6 +2,7 @@
   import '../app.css';
   import { onMount } from 'svelte';
   import { auth } from '$lib/stores/auth.js';
+  import Toast from '$lib/components/Toast.svelte';
 
   let { children } = $props();
   let authState = $state({ user: null, isLoggedIn: false });
@@ -20,6 +21,15 @@
     window.location.href = '/';
   }
 </script>
+
+<svelte:head>
+  <meta name="description" content="RateMyCourse - Honest, unfiltered college reviews. Find out the truth about your university, courses, professors, and teaching assistants." />
+  <meta property="og:title" content="RateMyCourse" />
+  <meta property="og:description" content="RateMyCourse - Honest, unfiltered college reviews." />
+  <meta property="og:type" content="website" />
+</svelte:head>
+
+<Toast />
 
 <!-- TopNavBar -->
 <header class="w-full border-b-4 border-black sticky top-0 z-50 bg-[#deffe0] shadow-[4px_4px_0px_0px_#000000] flex justify-between items-center px-6 py-4">
@@ -68,12 +78,12 @@
   </div>
   <div class="flex gap-12">
     <div class="flex flex-col gap-2">
-      <a class="font-bold uppercase tracking-widest text-white hover:bg-black hover:text-[#deffe0] px-2 transition-none" href="#">Terms</a>
-      <a class="font-bold uppercase tracking-widest text-white hover:bg-black hover:text-[#deffe0] px-2 transition-none" href="#">Privacy</a>
+      <a class="font-bold uppercase tracking-widest text-white hover:bg-black hover:text-[#deffe0] px-2 transition-none" href="/">Terms</a>
+      <a class="font-bold uppercase tracking-widest text-white hover:bg-black hover:text-[#deffe0] px-2 transition-none" href="/">Privacy</a>
     </div>
     <div class="flex flex-col gap-2">
-      <a class="font-bold uppercase tracking-widest text-white hover:bg-black hover:text-[#deffe0] px-2 transition-none" href="#">Contact</a>
-      <a class="font-bold uppercase tracking-widest text-white hover:bg-black hover:text-[#deffe0] px-2 transition-none" href="#">Archive</a>
+      <a class="font-bold uppercase tracking-widest text-white hover:bg-black hover:text-[#deffe0] px-2 transition-none" href="/">Contact</a>
+      <a class="font-bold uppercase tracking-widest text-white hover:bg-black hover:text-[#deffe0] px-2 transition-none" href="/">Archive</a>
     </div>
   </div>
 </footer>

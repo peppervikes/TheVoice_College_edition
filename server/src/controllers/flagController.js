@@ -1,4 +1,5 @@
 const Flag = require('../models/Flag');
+const logger = require('../utils/logger');
 
 /**
  * POST /api/flags
@@ -17,9 +18,12 @@ exports.createFlag = async (req, res) => {
       reasonText: reason,
       reportedBy: req.user.id
     });
+    
+    logger.warn(`Review ${reviewId} flagged by user ${req.user.id}. Reason: ${reason}`);
 
     res.status(201).json(flag);
   } catch (error) {
+    logger.error('Error creating flag', { error });
     res.status(500).json({ error: error.message });
   }
 };

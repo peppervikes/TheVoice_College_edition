@@ -77,6 +77,11 @@
 
 <svelte:head>
   <title>RateMyCourse - {details?.object?.name || details?.object?.code || 'Loading...'}</title>
+  {#if details?.object}
+    <meta name="description" content={`Read unfiltered reviews for ${details.object.name || details.object.code} at RateMyCourse. ${details.stats?.totalReviews || 0} reviews.`} />
+    <meta property="og:title" content={`${details.object.name || details.object.code} - RateMyCourse`} />
+    <meta property="og:description" content={`Read unfiltered reviews for ${details.object.name || details.object.code}.`} />
+  {/if}
 </svelte:head>
 
 <div class="max-w-7xl mx-auto px-6 py-12">

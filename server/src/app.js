@@ -3,6 +3,8 @@ const cors = require('cors');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const cookieParser = require('cookie-parser');
+const Sentry = require('@sentry/node');
+const logger = require('./utils/logger');
 
 const app = express();
 
@@ -60,9 +62,13 @@ app.get('/', (req, res) => {
 });
 
 // --- Global Error Handler ---
+if (process.env.SENTRY_DSN) {
+  Sentry.setupExpressErrorHandler(app);
+}
+
 // Catches any unhandled errors from route handlers
 app.use((err, req, res, next) => {
-  console.error('Unhandled error:', err);
+  logger.error('Unhandled error:', err);
 
   // Mongoose validation error
   if (err.name === 'ValidationError') {

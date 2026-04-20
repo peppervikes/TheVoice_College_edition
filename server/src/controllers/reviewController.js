@@ -1,5 +1,6 @@
 const Review = require('../models/Review');
 const ReviewVote = require('../models/ReviewVote');
+const logger = require('../utils/logger');
 
 /**
  * POST /api/reviews
@@ -32,11 +33,15 @@ exports.createReview = async (req, res) => {
       reviewText: textReview
     });
 
+    logger.info(`New review created by ${req.user.id} for object ${objectId}`);
+
     res.status(201).json(review);
   } catch (error) {
     if (error.code === 11000) {
+      logger.warn(`User ${req.user.id} attempted duplicate review on ${req.body.objectId}`);
       return res.status(400).json({ error: 'You have already reviewed this object.' });
     }
+    logger.error('Error creating review', { error });
     res.status(500).json({ error: error.message });
   }
 };
