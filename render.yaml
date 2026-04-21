@@ -5,7 +5,7 @@ services:
     name: ratemycourse-api
     runtime: node
     rootDir: server
-    buildCommand: npm ci --only=production
+    buildCommand: npm install
     startCommand: node src/server.js
     healthCheckPath: /
     envVars:
@@ -14,9 +14,9 @@ services:
       - key: PORT
         value: 5000
       - key: MONGO_URI
-        sync: false  # Set manually in Render dashboard
+        sync: false
       - key: JWT_SECRET
-        sync: false  # Set manually in Render dashboard
+        sync: false
       - key: GOOGLE_CLIENT_ID
         sync: false
       - key: GOOGLE_CLIENT_SECRET
