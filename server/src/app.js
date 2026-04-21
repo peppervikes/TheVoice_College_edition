@@ -21,25 +21,27 @@ app.use(cors({
 // Body parsing
 app.use(express.json({ limit: '10kb' })); // Limit body size to prevent abuse
 
-// --- Rate Limiting ---
-const generalLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100,                   // 100 requests per window per IP
-  message: { error: 'Too many requests. Please try again later.' },
-  standardHeaders: true,
-  legacyHeaders: false
-});
+// --- Rate Limiting (disabled in test environment) ---
+if (process.env.NODE_ENV !== 'test') {
+  const generalLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 100,                   // 100 requests per window per IP
+    message: { error: 'Too many requests. Please try again later.' },
+    standardHeaders: true,
+    legacyHeaders: false
+  });
 
-const authLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 20,                    // Stricter limit for auth endpoints
-  message: { error: 'Too many login attempts. Please try again later.' },
-  standardHeaders: true,
-  legacyHeaders: false
-});
+  const authLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 20,                    // Stricter limit for auth endpoints
+    message: { error: 'Too many login attempts. Please try again later.' },
+    standardHeaders: true,
+    legacyHeaders: false
+  });
 
-app.use('/api/', generalLimiter);
-app.use('/api/auth/', authLimiter);
+  app.use('/api/', generalLimiter);
+  app.use('/api/auth/', authLimiter);
+}
 
 // --- Routes ---
 const authRoutes = require('./routes/authRoutes');

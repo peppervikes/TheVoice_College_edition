@@ -1,0 +1,27 @@
+# Render deployment configuration
+# See: https://render.com/docs/yaml-spec
+services:
+  - type: web
+    name: ratemycourse-api
+    runtime: node
+    rootDir: server
+    buildCommand: npm ci --only=production
+    startCommand: node src/server.js
+    healthCheckPath: /
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 5000
+      - key: MONGO_URI
+        sync: false  # Set manually in Render dashboard
+      - key: JWT_SECRET
+        sync: false  # Set manually in Render dashboard
+      - key: GOOGLE_CLIENT_ID
+        sync: false
+      - key: GOOGLE_CLIENT_SECRET
+        sync: false
+      - key: CLIENT_URL
+        sync: false
+      - key: SENTRY_DSN
+        sync: false

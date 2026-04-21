@@ -9,7 +9,6 @@ node_modules/
 
 # Keep template files
 !.env.example
-!.env.test
 
 # OS files
 .DS_Store
@@ -22,7 +21,12 @@ Thumbs.db
 # Logs
 *.log
 npm-debug.log*
+logs/
 
 # Build output
 dist/
 build/
+.svelte-kit/
+
+# Test artifacts
+coverage/

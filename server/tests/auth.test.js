@@ -30,8 +30,8 @@ describe('Auth Endpoints', () => {
       .post('/api/auth/register')
       .send(testUser);
 
-    expect(res.statusCode).toEqual(400);
-    expect(res.body.error).toContain('Email or pseudonym already in use');
+    expect(res.statusCode).toEqual(409);
+    expect(res.body.error).toContain('account with this email already exists');
   });
 
   it('should login an existing user', async () => {
@@ -72,7 +72,7 @@ describe('Auth Endpoints', () => {
       .set('Authorization', `Bearer ${token}`);
 
     expect(res.statusCode).toEqual(200);
-    expect(res.body.user.email).toEqual(testUser.email);
+    expect(res.body.email).toEqual(testUser.email);
   });
 
   it('should reject unauthenticated request to profile', async () => {

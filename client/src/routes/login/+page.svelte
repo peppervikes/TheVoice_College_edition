@@ -1,10 +1,53 @@
 <script>
+  import { onMount } from 'svelte';
   import { auth } from '$lib/stores/auth.js';
   
+  const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+
   let email = $state('');
   let password = $state('');
   let errorMsg = $state('');
   let isLoading = $state(false);
+  let googleReady = $state(false);
+
+  onMount(() => {
+    if (!GOOGLE_CLIENT_ID) return;
+
+    // Load Google Identity Services script
+    const script = document.createElement('script');
+    script.src = 'https://accounts.google.com/gsi/client';
+    script.async = true;
+    script.defer = true;
+    script.onload = () => {
+      window.google.accounts.id.initialize({
+        client_id: GOOGLE_CLIENT_ID,
+        callback: handleGoogleCredential,
+      });
+      googleReady = true;
+    };
+    document.head.appendChild(script);
+  });
+
+  async function handleGoogleCredential(response) {
+    isLoading = true;
+    errorMsg = '';
+    try {
+      await auth.googleLogin(response.credential);
+      window.location.href = '/';
+    } catch (error) {
+      errorMsg = error.response?.data?.error || 'Google login failed. Please try again.';
+    } finally {
+      isLoading = false;
+    }
+  }
+
+  function triggerGoogleLogin() {
+    if (!GOOGLE_CLIENT_ID) {
+      errorMsg = 'Google login is not configured yet. Please use email/password.';
+      return;
+    }
+    window.google.accounts.id.prompt();
+  }
 
   async function handleLogin(e) {
     e.preventDefault();
@@ -19,12 +62,6 @@
     } finally {
       isLoading = false;
     }
-  }
-
-  function handleGoogleLogin() {
-    // Will be wired when GOOGLE_CLIENT_ID is available
-    // For now, use the dev stub
-    errorMsg = 'Google login requires setup. Use email/password or register a new account.';
   }
 </script>
 
@@ -69,9 +106,9 @@
         </div>
       </div>
       
-      <button onclick={handleGoogleLogin} class="mt-8 w-full bg-[#fdd400] text-black border-4 border-black font-headline font-black text-xl uppercase py-4 neo-shadow active-press flex items-center justify-center gap-4">
+      <button onclick={triggerGoogleLogin} class="mt-8 w-full bg-[#fdd400] text-black border-4 border-black font-headline font-black text-xl uppercase py-4 neo-shadow active-press flex items-center justify-center gap-4">
         <span class="material-symbols-outlined text-3xl leading-none">login</span>
-        Sign in with Google
+        {GOOGLE_CLIENT_ID ? 'Sign in with Google' : 'Google (Not Configured)'}
       </button>
 
       <p class="mt-8 font-bold uppercase tracking-wider">
