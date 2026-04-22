@@ -3,6 +3,7 @@
   import { onMount } from 'svelte';
   import { auth } from '$lib/stores/auth.js';
   import Toast from '$lib/components/Toast.svelte';
+  import { Analytics } from '@vercel/analytics/svelte';
 
   let { children } = $props();
   let authState = $state({ user: null, isLoggedIn: false });
@@ -29,6 +30,7 @@
   <meta property="og:type" content="website" />
 </svelte:head>
 
+<Analytics />
 <Toast />
 
 <!-- TopNavBar -->
