@@ -3,7 +3,7 @@
   import { onMount } from 'svelte';
   import { auth } from '$lib/stores/auth.js';
   import Toast from '$lib/components/Toast.svelte';
-  import { Analytics } from '@vercel/analytics/sveltekit';
+  import { inject } from '@vercel/analytics';
 
   let { children } = $props();
   let authState = $state({ user: null, isLoggedIn: false });
@@ -15,6 +15,7 @@
 
   onMount(() => {
     auth.loadSession();
+    inject();
   });
 
   function handleLogout() {
@@ -30,7 +31,6 @@
   <meta property="og:type" content="website" />
 </svelte:head>
 
-<Analytics />
 <Toast />
 
 <!-- TopNavBar -->
