@@ -3,8 +3,10 @@
   import { onMount } from 'svelte';
 
   let universities = $state([]);
+  let searchResults = $state([]);
   let searchQuery = $state('');
   let stats = $state({ totalReviews: 0, totalUniversities: 0 });
+  let searchTimeout = null;
 
   onMount(async () => {
     try {
@@ -19,10 +21,21 @@
     }
   });
 
-  // Example placeholder for hot topics if needed for functionality
-  function searchTopic(topic) {
-    searchQuery = topic;
-  }
+  $effect(() => {
+    if (searchQuery !== '') {
+      if (searchTimeout) clearTimeout(searchTimeout);
+      searchTimeout = setTimeout(async () => {
+        try {
+          const res = await api.get(`/search?q=${searchQuery}`);
+          searchResults = res.data;
+        } catch (error) {
+          console.error('Search failed', error);
+        }
+      }, 300);
+    } else {
+      searchResults = [];
+    }
+  });
 </script>
 
 <svelte:head>
@@ -33,19 +46,19 @@
   <!-- Hero Section -->
   <section class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center mb-24">
     <div class="lg:col-span-7">
-      <h1 class="text-6xl md:text-8xl font-headline font-black tracking-tighter leading-none mb-8">
+      <h1 class="text-5xl md:text-8xl font-headline font-black tracking-tighter leading-none mb-8">
         UNFILTER_ YOUR <br/>
-        <span class="bg-[#fdd400] px-4 border-4 border-black inline-block transform -rotate-2">EDUCATION.</span>
+        <span class="bg-[#fdd400] px-2 md:px-4 border-4 border-black inline-block transform -rotate-2">EDUCATION.</span>
       </h1>
       <div class="relative max-w-2xl group">
         <input 
-          class="w-full bg-white border-[6px] border-black p-6 text-2xl font-bold neo-shadow focus:shadow-none focus:translate-x-1 focus:translate-y-1 transition-all outline-none" 
+          class="w-full bg-white border-[4px] md:border-[6px] border-black p-4 md:p-6 text-xl md:text-2xl font-bold neo-shadow focus:shadow-none focus:translate-x-1 focus:translate-y-1 transition-all outline-none" 
           placeholder="Search for your University..." 
           bind:value={searchQuery}
           type="text"
         />
-        <button class="absolute right-4 top-1/2 -translate-y-1/2 bg-[#004be2] text-white border-4 border-black p-4 neo-shadow active-press">
-          <span class="material-symbols-outlined text-4xl leading-none">search</span>
+        <button class="absolute right-3 top-1/2 -translate-y-1/2 bg-[#004be2] text-white border-4 border-black p-2 md:p-4 neo-shadow active-press">
+          <span class="material-symbols-outlined text-3xl md:text-4xl leading-none">search</span>
         </button>
       </div>
       <div class="mt-8 flex gap-4 flex-wrap">
@@ -60,16 +73,16 @@
       <!-- Live Search Results appearing below the bar -->
       {#if searchQuery !== ''}
         <div class="mt-8 grid grid-cols-1 gap-4 max-w-2xl">
-          <h2 class="text-2xl font-black bg-black text-white px-4 py-2 uppercase tracking-tighter w-max">Search Results</h2>
-          {#each universities.filter(u => u.name.toLowerCase().includes(searchQuery.toLowerCase())) as uni}
-            <a href={`/university/${uni._id}`} class="block p-6 bg-white border-4 border-black neo-shadow hover:bg-[#deffe0] transition-colors group cursor-pointer text-left">
-              <h3 class="text-2xl font-headline font-black text-black mb-1 group-hover:text-[#004be2] transition-colors">{uni.name}</h3>
-              <p class="font-bold text-[#b41924] uppercase tracking-widest">{uni.country}</p>
+          <h2 class="text-xl md:text-2xl font-black bg-black text-white px-4 py-2 uppercase tracking-tighter w-max">Search Results</h2>
+          {#each searchResults as uni}
+            <a href={`/university/${uni._id}`} class="block p-4 md:p-6 bg-white border-4 border-black neo-shadow hover:bg-[#deffe0] transition-colors group cursor-pointer text-left">
+              <h3 class="text-xl md:text-2xl font-headline font-black text-black mb-1 group-hover:text-[#004be2] transition-colors">{uni.name}</h3>
+              <p class="font-bold text-[#b41924] uppercase tracking-widest text-sm md:text-base">{uni.country}</p>
             </a>
           {/each}
-          {#if universities.filter(u => u.name.toLowerCase().includes(searchQuery.toLowerCase())).length === 0}
+          {#if searchResults.length === 0}
             <div class="p-6 bg-white border-4 border-black neo-shadow text-center">
-              <p class="font-bold text-xl uppercase text-[#b41924]">No universities found matching "{searchQuery}"</p>
+              <p class="font-bold text-lg md:text-xl uppercase text-[#b41924]">No universities found matching "{searchQuery}"</p>
             </div>
           {/if}
         </div>

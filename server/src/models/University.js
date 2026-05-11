@@ -11,7 +11,10 @@ const universitySchema = new mongoose.Schema({
   },
   domain: {
     type: String
-  }
+  },
+  aliases: [{
+    type: String
+  }]
 }, { timestamps: true });
 
 module.exports = mongoose.model('University', universitySchema);

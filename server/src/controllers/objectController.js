@@ -28,7 +28,10 @@ exports.searchObjects = async (req, res) => {
     if (!universityId) {
       // Search universities
       const filter = {};
-      if (q) filter.name = { $regex: q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), $options: 'i' };
+      if (q) {
+        const regex = { $regex: q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), $options: 'i' };
+        filter.$or = [{ name: regex }, { aliases: regex }];
+      }
       results = await University.find(filter).limit(20);
     } else {
       // Search within a university

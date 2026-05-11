@@ -11,6 +11,15 @@
   let difficulty = $state(3);
   let textReview = $state('');
   let anonymous = $state(true);
+  
+  // Course specific fields
+  let wouldTakeAgain = $state(true);
+  let markingLenient = $state(true);
+  let papersEasy = $state(false);
+  let projectsEasy = $state(false);
+  let examType = $state('mixed');
+  let examStyle = $state('both');
+
   let isSubmitting = $state(false);
   let errorMsg = $state('');
   let authState = $state({ user: null, isLoggedIn: false });
@@ -35,14 +44,28 @@
     errorMsg = '';
     
     try {
-      await api.post('/reviews', {
+      let payload = {
         objectType: type,
         objectId: id,
         universityId,
         anonymous,
         ratings: { difficulty },
         textReview
-      });
+      };
+
+      if (type === 'course') {
+        payload.ratings = {
+          ...payload.ratings,
+          wouldTakeAgain,
+          markingLenient,
+          papersEasy,
+          projectsEasy,
+          examType,
+          examStyle
+        };
+      }
+
+      await api.post('/reviews', payload);
       window.location.href = `/object/${type}/${id}`;
     } catch (error) {
       errorMsg = error.response?.data?.error || 'Failed to submit review';
@@ -93,6 +116,50 @@
           </div>
         </div>
       </div>
+
+      {#if type === 'course'}
+        <div class="bg-[#e0e7ff] p-8 border-4 border-black neo-shadow space-y-6">
+          <h3 class="text-3xl font-headline font-black uppercase tracking-tighter mb-4">Course Details</h3>
+          
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <label class="flex items-center gap-4 cursor-pointer">
+              <input type="checkbox" bind:checked={wouldTakeAgain} class="w-8 h-8 accent-[#004be2] border-4 border-black cursor-pointer" />
+              <span class="text-xl font-black uppercase">Would Take Again?</span>
+            </label>
+            <label class="flex items-center gap-4 cursor-pointer">
+              <input type="checkbox" bind:checked={markingLenient} class="w-8 h-8 accent-[#004be2] border-4 border-black cursor-pointer" />
+              <span class="text-xl font-black uppercase">Lenient Marking?</span>
+            </label>
+            <label class="flex items-center gap-4 cursor-pointer">
+              <input type="checkbox" bind:checked={papersEasy} class="w-8 h-8 accent-[#004be2] border-4 border-black cursor-pointer" />
+              <span class="text-xl font-black uppercase">Easy Papers?</span>
+            </label>
+            <label class="flex items-center gap-4 cursor-pointer">
+              <input type="checkbox" bind:checked={projectsEasy} class="w-8 h-8 accent-[#004be2] border-4 border-black cursor-pointer" />
+              <span class="text-xl font-black uppercase">Easy Projects?</span>
+            </label>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+            <div>
+              <label class="block font-black text-xl mb-2 uppercase tracking-tight">Exam Type</label>
+              <select bind:value={examType} class="w-full bg-white border-4 border-black p-4 text-xl font-bold neo-shadow focus:shadow-none transition-all outline-none">
+                <option value="offline">Offline</option>
+                <option value="online">Online</option>
+                <option value="mixed">Mixed</option>
+              </select>
+            </div>
+            <div>
+              <label class="block font-black text-xl mb-2 uppercase tracking-tight">Exam Style</label>
+              <select bind:value={examStyle} class="w-full bg-white border-4 border-black p-4 text-xl font-bold neo-shadow focus:shadow-none transition-all outline-none">
+                <option value="objective">Objective (MCQs)</option>
+                <option value="subjective">Subjective (Written)</option>
+                <option value="both">Both</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      {/if}
       
       <div>
         <label class="block text-3xl font-headline font-black uppercase mb-6 tracking-tighter">The Raw Truth</label>

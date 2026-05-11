@@ -30,7 +30,10 @@ const reviewSchema = new mongoose.Schema({
     wouldTakeAgain: { type: Boolean },
     assignmentDifficulty: { type: Number, min: 1, max: 5 },
     examType: { type: String, enum: ['online', 'offline', 'mixed'] },
-    examStyle: { type: String, enum: ['objective', 'subjective', 'both'] }
+    examStyle: { type: String, enum: ['objective', 'subjective', 'both'] },
+    markingLenient: { type: Boolean },
+    papersEasy: { type: Boolean },
+    projectsEasy: { type: Boolean }
   },
   tags: [{ type: String }],
   grade: { type: String },
