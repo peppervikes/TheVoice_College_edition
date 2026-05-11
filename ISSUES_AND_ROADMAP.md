@@ -60,3 +60,9 @@ Upon analyzing the codebase and current architecture, the following critical iss
 2. **Review Upvoting/Downvoting**: The schema supports `likes` and `dislikes`. We should wire this up in the frontend so users can upvote the most helpful reviews.
 3. **Report/Moderation Queue**: A dedicated UI in the Admin Dashboard to review flagged content and ban malicious users.
 4. **Bulk Excel Data Importer (Job Runner)**: Adding universities and courses one-by-one is too slow. We need a background process/script that parses a strictly formatted Excel/CSV template to bulk-insert universities, courses, professors, and TAs into the database reliably.
+
+---
+
+## 5. DevOps & CI/CD Pipelines
+- **Staging / Testing Environment**: Set up a separate branch (e.g., `dev` or `staging`) linked to a staging deployment. All future work should be merged here first, allowing for manual verification of changes in a live environment before merging into the `main` production branch.
+- **Automated Testing Pipeline**: Implement a GitHub Actions workflow that automatically runs backend integration tests (Jest) and basic frontend UI tests (Playwright) on every commit and Pull Request. This ensures no breaking changes are accidentally merged into the main branches.
